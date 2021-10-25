@@ -1,5 +1,6 @@
 const express = require('express')
 const User = require('../models/user')
+const House = require('../models/house')
 const auth = require('../middleware/auth')
 const router = express.Router()
 
@@ -52,8 +53,10 @@ router.post('/users/logoutAll', auth, async (req, res) => {
 })
 
 router.get('/users/me', auth, async (req, res) => {
-    res.send({ user: req.user, token: req.token})
+    const houses = await House.find({ owner: req.user._id })
+    res.send({ user: req.user, token: req.token, houses: houses })
 })
+
 
 router.patch('/users/me', auth, async (req, res) => {
     const updates = Object.keys(req.body)

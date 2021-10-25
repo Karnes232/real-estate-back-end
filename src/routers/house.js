@@ -1,5 +1,4 @@
 const express = require('express')
-const multer = require('multer')
 const sharp = require('sharp')
 const House = require('../models/house')
 const auth = require('../middleware/auth')

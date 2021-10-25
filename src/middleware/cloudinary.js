@@ -4,9 +4,9 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 cloudinary.config({
-    cloud_name: "karnes232",
-    api_key: 692792735926678,
-    api_secret: '5EBCc0lvcbWTRpr8h29e7pJWNEI'
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET
 })
 
 exports.uploads = (file, folder) => {

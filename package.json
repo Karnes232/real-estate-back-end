@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
+    "dev": "env-cmd -f ./config/.env nodemon src/index.js",
     "kill": "npx kill-port 4000"
   },
   "author": "",
@@ -26,6 +26,7 @@
     "validator": "^13.6.0"
   },
   "devDependencies": {
+    "env-cmd": "^10.1.0",
     "nodemon": "^2.0.12"
   }
 }
