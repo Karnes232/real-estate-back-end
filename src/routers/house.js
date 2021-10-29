@@ -124,6 +124,90 @@ router.get('/houses/:id', async (req, res) => {
     }
 })
 
+router.put('/houses/:id', auth, async (req, res) => {
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['property', 'amenities']
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+
+    if (!isValidOperation) {
+         return res.status(400).send({ error: 'Invalid updates'})
+    }
+
+    try {
+        const house = await House.findById(req.params.id)
+        property = req.body.property
+        amenities = req.body.amenities
+        if (!house) {
+            throw new Error()
+        }
+        
+        house.title = property.title
+        house.description = property.description
+        house.propertyType = property.propertyType
+        house.bedrooms = property.bedrooms
+        house.bathrooms = property.bathrooms
+        house.address = property.address
+        house.city = property.city
+        house.province = property.province
+        house.country = property.country
+        house.sqFoot = property.sqFoot
+        house.price = property.price
+        house.latitude = property.latitude
+        house.longitude = property.longitude
+        house.amenities = {
+                aircon: amenities.aircon,
+                balcony: amenities.balcony,
+                dishwasher: amenities.dishwasher,
+                pool: amenities.pool,
+                fridge: amenities.fridge,
+                alarm: amenities.alarm,
+                windowCover: amenities.windowCover,
+                laundry: amenities.laundry
+            },
+        await house.save()
+        res.send(house)
+    } catch (e) {
+        if(e.name === 'CastError'){
+            return res.status(400).send('Invalid id')
+        }
+        res.status(400).send(e)
+    }
+})
+
+router.put('/houses/:id/photos', auth, async (req, res) => {
+    
+    const deletedPhotos = req.body.active
+    const newPhotoList = []
+    try {
+        const house = await House.findById(req.params.id)
+        
+        if (!house || !house.mainImg) {
+            throw new Error()
+        }
+        
+        const filteredImgs = house.displayImgs.filter((img) => {
+            if (!deletedPhotos.includes(img.image)) {
+                newPhotoList.push(img.image)
+            }
+            
+        })
+        house.displayImgs = []
+ 
+        for (const photo of newPhotoList) {
+            const image = photo
+            house.displayImgs = house.displayImgs.concat({ image })     
+        }
+
+        await house.save()
+  
+        res.send()
+    } catch (e) {
+        res.status(404).send()
+    }
+
+
+})
+
 router.get('/houses/:id/img', async (req, res) => {
     try {
         const house = await House.findById(req.params.id)
