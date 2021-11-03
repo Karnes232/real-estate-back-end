@@ -5,6 +5,7 @@ const auth = require('../middleware/auth')
 const upload2 = require('../utils/multer')
 const upload = require('../middleware/multer')
 const cloudinary = require('../middleware/cloudinary')
+const cloudinary2 = require('cloudinary');
 const fs = require('fs')
 const router = express.Router()
 
@@ -73,7 +74,7 @@ router.post('/photo-upload', upload.array('image'), async (req, res) => {
             const newPath = await uploader(path)
             urls.push(newPath)
             fs.unlinkSync(path)
-            const image = newPath.url
+            const image = newPath
             house.displayImgs = house.displayImgs.concat({ image })
             
         }
@@ -178,15 +179,18 @@ router.put('/houses/:id/photos', auth, async (req, res) => {
     
     const deletedPhotos = req.body.active
     const newPhotoList = []
+    const cloudinaryDelete = req.body.cloudinaryDelete
     try {
         const house = await House.findById(req.params.id)
-        
         if (!house || !house.mainImg) {
             throw new Error()
         }
+
+        cloudinary2.v2.api.delete_resources(cloudinaryDelete,
+            function(error, result){console.log(result);});
         
         const filteredImgs = house.displayImgs.filter((img) => {
-            if (!deletedPhotos.includes(img.image)) {
+            if (!deletedPhotos.includes(img.image[0].url)) {
                 newPhotoList.push(img.image)
             }
             

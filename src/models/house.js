@@ -19,10 +19,15 @@ const houseSchema = new mongoose.Schema({
         type: Buffer
     },
     displayImgs: [{
-        image: {
-            type: String,
-            trim: true
-        }
+        image: [{
+            url: {
+                type: String,
+                trim: true
+            },
+            id: {
+                type: String
+            }      
+        }]
     }],
     amenities: {
         aircon: {
