@@ -175,6 +175,30 @@ router.put('/houses/:id', auth, async (req, res) => {
     }
 })
 
+router.delete('/houses/:id', auth, async (req, res) => {
+    const deletePhotos =  []
+    
+    try {
+        const house = await House.findById(req.params.id)
+        if (!house || !house.mainImg) {
+            throw new Error()
+        }
+        house.displayImgs.map(image => {
+            deletePhotos.push(image.image[0].id)
+        })
+        cloudinary2.v2.api.delete_resources(deletePhotos,
+            function(error, result){console.log(result);});
+
+        await House.findByIdAndDelete(req.params.id)
+        res.send()
+        
+    } catch (error) {
+        res.status(404).send()
+    }
+    
+    
+})
+
 router.put('/houses/:id/photos', auth, async (req, res) => {
     
     const deletedPhotos = req.body.active
