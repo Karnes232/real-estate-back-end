@@ -15,6 +15,17 @@ const houseSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     latitude: { type: String, trim: true, required: true },
     longitude: { type: String, trim: true, required: true },
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
+    },
     mainImg: {
         type: Buffer
     },

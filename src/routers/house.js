@@ -13,12 +13,39 @@ router.get('/houses', async (req, res) => {
     try {
         const houses = await House.find({})
             .sort({'date': 'desc'})
-            .limit(10)
         if (!houses) {
             throw new Error()
         }
         res.send(houses)
     } catch (e) {
+        res.status(404).send()
+    }
+})
+
+router.post('/house-search', async (req, res) => {
+    const { type, location } = req.body
+    try {
+        let houses = {}
+        if (type && location) {
+            houses = await House.find({ city: location, propertyType: type})
+            .sort({'date': 'desc'})
+        } else if (type && !location) {
+            houses = await House.find({propertyType: type})
+            .sort({'date': 'desc'})
+        } else if (location && !type) {
+            houses = await House.find({ city: location})
+            .sort({'date': 'desc'})
+        } else {
+            houses = await House.find({})
+            .sort({'date': 'desc'})
+        }
+        
+        if (!houses) {
+            throw new Error()
+        }
+        res.send(houses)
+    } catch (e) {
+        console.log(e)
         res.status(404).send()
     }
 })
@@ -40,6 +67,13 @@ router.post('/houses', auth, async (req, res) => {
         price: property.price,
         latitude: property.latitude,
         longitude: property.longitude,
+        geometry: {
+            type: 'Point',
+            coordinates: [
+                property.longitude,
+                property.latitude
+            ]
+        },
         amenities: {
             aircon: amenities.aircon,
             balcony: amenities.balcony,
@@ -155,6 +189,12 @@ router.put('/houses/:id', auth, async (req, res) => {
         house.price = property.price
         house.latitude = property.latitude
         house.longitude = property.longitude
+        house.geometry = {
+            coordinates: [
+                property.longitude,
+                property.latitude
+            ]
+        }
         house.amenities = {
                 aircon: amenities.aircon,
                 balcony: amenities.balcony,
@@ -261,6 +301,18 @@ router.get('/houses/:id/:img', async (req, res) => {
 
         res.set('Content-Type', 'image/png')
         res.send(house.displayImgs[req.params.img].image)
+    } catch (e) {
+        res.status(404).send()
+    }
+})
+
+router.get('/mapbox', async (req, res) => {
+    try {
+        const houses = await House.find({})
+        if (!houses) {
+            throw new Error()
+        }
+        res.send({ features: houses })
     } catch (e) {
         res.status(404).send()
     }
