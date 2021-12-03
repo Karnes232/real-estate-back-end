@@ -23,17 +23,29 @@ router.get('/houses', async (req, res) => {
 })
 
 router.post('/house-search', async (req, res) => {
-    const { type, location } = req.body
+    const { type, location, bedrooms } = req.body
     try {
         let houses = {}
-        if (type && location) {
-            houses = await House.find({ city: location, propertyType: type})
+        if (type && location && bedrooms) {
+            houses = await House.find({ city: location, propertyType: type, bedrooms: bedrooms })
             .sort({'date': 'desc'})
-        } else if (type && !location) {
-            houses = await House.find({propertyType: type})
+        } else if (type && bedrooms && !location) {
+            houses = await House.find({ propertyType: type, bedrooms: bedrooms })
             .sort({'date': 'desc'})
-        } else if (location && !type) {
-            houses = await House.find({ city: location})
+        } else if (type && !bedrooms && !location) {
+            houses = await House.find({ propertyType: type })
+            .sort({'date': 'desc'})
+        }  else if (location && bedrooms && !type) {
+            houses = await House.find({ city: location, bedrooms: bedrooms })
+            .sort({'date': 'desc'})
+        } else if (location && type && !bedrooms) {
+            houses = await House.find({ city: location, propertyType: type })
+            .sort({'date': 'desc'})
+        } else if (location && !type && !bedrooms) {
+            houses = await House.find({ city: location })
+            .sort({'date': 'desc'})
+        } else if (bedrooms && !type && !location) {
+            houses = await House.find({ bedrooms: bedrooms })
             .sort({'date': 'desc'})
         } else {
             houses = await House.find({})
@@ -45,7 +57,6 @@ router.post('/house-search', async (req, res) => {
         }
         res.send(houses)
     } catch (e) {
-        console.log(e)
         res.status(404).send()
     }
 })

@@ -1,8 +1,10 @@
+const parsePhoneNumber = require('libphonenumber-js')
 const express = require('express')
 const User = require('../models/user')
 const House = require('../models/house')
 const auth = require('../middleware/auth')
 const router = express.Router()
+
 
 
 router.post('/users', async (req, res) => {
@@ -55,6 +57,26 @@ router.post('/users/logoutAll', auth, async (req, res) => {
 router.get('/users/me', auth, async (req, res) => {
     const houses = await House.find({ owner: req.user._id })
     res.send({ user: req.user, token: req.token, houses: houses })
+})
+
+router.put('/users/me', auth, async (req, res) => {
+    try { 
+        const user = await User.findById(req.user._id )
+        if (!user) {
+            throw new Error()
+        }
+        user.firstName = req.body.firstName
+        user.lastName = req.body.lastName
+        user.email = req.body.email
+        user.phoneNumber = parsePhoneNumber(req.body.phoneNumber, 'DO').formatInternational()
+        await user.save()
+        res.send(user)
+    } catch (e) {
+        if(e.name === 'CastError'){
+            return res.status(400).send('Invalid id')
+        }
+        res.status(400).send(e)
+    }
 })
 
 
