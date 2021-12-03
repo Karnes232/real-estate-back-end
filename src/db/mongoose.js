@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const appName = 'real-estate'
 
 
-mongoose.connect(`mongodb://127.0.0.1:27017/${appName}`, {
+mongoose.connect(`${process.env.DB}/${appName}`, {
     useNewUrlParser: true,
 })
 

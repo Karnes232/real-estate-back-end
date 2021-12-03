@@ -9,6 +9,10 @@ const cloudinary2 = require('cloudinary');
 const fs = require('fs')
 const router = express.Router()
 
+router.get('/', async (req, res) => {
+    res.send({test: 'Hello'})
+})
+
 router.get('/houses', async (req, res) => {
     try {
         const houses = await House.find({})
