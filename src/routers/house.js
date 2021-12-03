@@ -10,7 +10,6 @@ const fs = require('fs')
 const router = express.Router()
 
 router.get('/', async (req, res) => {
-    console.log('Hello')
     res.send({test: 'Hello'})
 })
 
