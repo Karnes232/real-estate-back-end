@@ -8,16 +8,18 @@ const router = express.Router()
 
 
 router.post('/users', async (req, res) => {
-    console.log('Hello')
     if (req.body.password !== req.body.confirmPassword) {
         return res.status(400).send({ error: "Password does not match"})
     }
     const user = new User(req.body)
+    console.log(user)
     try {
         await user.save()
         const token = await user.generateAuthToken()
+        console.log(token)
         res.status(201).send({ user, token })
     } catch (e) {
+        console.log(e)
         res.status(400).send(e)
     }
 })
