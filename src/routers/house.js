@@ -125,10 +125,16 @@ router.post('/photo-upload', upload.array('image'), async (req, res) => {
         for (const file of files) {
             const { path } = file;
             const newPath = await uploader(path)
-            newPath.url.replace('http://', 'https://')
             urls.push(newPath)
             fs.unlinkSync(path)
-            const image = newPath
+            let image = newPath
+            let imageReplacement = image.url
+            let slice1 = imageReplacement.slice(0,4)
+            let slice2 = imageReplacement.slice(4)
+            imageReplacement = `${slice1}s${slice2}`
+            console.log(imageReplacement)
+            image.url = imageReplacement
+            console.log(image)
             house.displayImgs = house.displayImgs.concat({ image })
             
         }
