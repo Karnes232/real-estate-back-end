@@ -110,8 +110,11 @@ router.post('/houses', auth, async (req, res) => {
 })
 
 router.post('/photo-upload', upload.array('image'), async (req, res) => {
+    console.log('Error testing 1')
     const uploader = async (path) => await cloudinary.uploads(path, 'Real-Estate');
+    console.log('Error testing 2')
     const urls = []
+    console.log('Error testing 3')
     try {
         const house = await House.findById(req.body.submittedHouse)
         if (!house) {

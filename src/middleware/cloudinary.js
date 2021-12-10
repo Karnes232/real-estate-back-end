@@ -10,9 +10,7 @@ cloudinary.config({
 })
 
 exports.uploads = (file, folder) => {
-    console.log('Error Testing 1')
     return new Promise(resolve => {
-        console.log('Error Testing 2')
         cloudinary.uploader.upload(file, (result) => {
             resolve({
                 url: result.url,
