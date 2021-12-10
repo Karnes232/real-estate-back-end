@@ -119,19 +119,13 @@ router.post('/photo-upload', upload.array('image'), async (req, res) => {
         }
         const files = req.files;
         for (const file of files) {
-            console.log('where is the error 1')
             const { path } = file;
-            console.log('where is the error 2')
             const newPath = await uploader(path)
-            console.log('where is the error 3')
             urls.push(newPath)
-            console.log('where is the error 4')
             fs.unlinkSync(path)
-            console.log('where is the error 5')
             const image = newPath
-            console.log('where is the error 6')
             house.displayImgs = house.displayImgs.concat({ image })
-            console.log('where is the error 7')
+            
         }
         
         await house.save()
