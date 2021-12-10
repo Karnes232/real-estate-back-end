@@ -9,6 +9,10 @@ const cloudinary2 = require('cloudinary');
 const fs = require('fs')
 const router = express.Router()
 
+const multer = require('multer');
+const { storage } = require('../middleware/cloudinary')
+const upload3 = multer({ storage })
+
 router.get('/', async (req, res) => {
     res.send({test: 'Hello'})
 })
@@ -122,7 +126,7 @@ router.post('/photo-upload', upload.array('image'), async (req, res) => {
             const { path } = file;
             const newPath = await uploader(path)
             urls.push(newPath)
-            
+            fs.unlinkSync(path)
             const image = newPath
             house.displayImgs = house.displayImgs.concat({ image })
             
