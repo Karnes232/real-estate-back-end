@@ -125,6 +125,7 @@ router.post('/photo-upload', upload.array('image'), async (req, res) => {
         for (const file of files) {
             const { path } = file;
             const newPath = await uploader(path)
+            newPath.url.replace('http://', 'https://')
             urls.push(newPath)
             fs.unlinkSync(path)
             const image = newPath
